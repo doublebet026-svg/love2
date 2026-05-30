@@ -26,11 +26,11 @@ export default function Footer() {
             <ul className="space-y-2 text-gray-300">
               <li className="flex items-center space-x-2">
                 <Mail size={18} />
-                <span>info@khcww.org</span>
+                <span>info@khcww.co.ke</span>
               </li>
               <li className="flex items-center space-x-2">
                 <Phone size={18} />
-                <span>+254 (0) XXX XXX XXX</span>
+                <span>+254 728 854966</span>
               </li>
               <li className="flex items-center space-x-2">
                 <MapPin size={18} />

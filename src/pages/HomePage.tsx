@@ -1,18 +1,105 @@
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import heroImage from '../assets/hero.png';
+
+const carouselImages = [
+  {
+    src: heroImage,
+    alt: 'Healthcare professionals'
+  },
+  {
+    src: 'https://images.pexels.com/photos/5632399/pexels-photo-5632399.jpeg',
+    alt: 'Medical team collaboration'
+  },
+  {
+    src: 'https://images.pexels.com/photos/3807517/pexels-photo-3807517.jpeg',
+    alt: 'Healthcare workers'
+  },
+  {
+    src: 'https://images.pexels.com/photos/4173612/pexels-photo-4173612.jpeg',
+    alt: 'Medical professionals'
+  }
+];
 
 export default function HomePage() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [autoPlay, setAutoPlay] = useState(true);
+
+  useEffect(() => {
+    if (!autoPlay) return;
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % carouselImages.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [autoPlay]);
+
+  const next = () => {
+    setAutoPlay(false);
+    setCurrentIndex((prev) => (prev + 1) % carouselImages.length);
+  };
+
+  const prev = () => {
+    setAutoPlay(false);
+    setCurrentIndex((prev) => (prev - 1 + carouselImages.length) % carouselImages.length);
+  };
+
   return (
     <div className="w-full">
-      {/* Hero Section */}
-      <section className="relative h-screen hero-gradient flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 opacity-20">
-          <img
-            src="https://images.pexels.com/photos/3807517/pexels-photo-3807517.jpeg"
-            alt="Healthcare workers"
-            className="w-full h-full object-cover"
-          />
+      {/* Hero Carousel Section */}
+      <section className="relative h-screen flex items-center justify-center overflow-hidden bg-primary-900">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentIndex}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8 }}
+            className="absolute inset-0"
+          >
+            <img
+              src={carouselImages[currentIndex].src}
+              alt={carouselImages[currentIndex].alt}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/40" />
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Navigation Arrows */}
+        <button
+          onClick={prev}
+          className="absolute left-8 z-20 bg-white/20 hover:bg-white/40 smooth-transition rounded-full p-3 text-white"
+          aria-label="Previous image"
+        >
+          <ChevronLeft size={28} />
+        </button>
+        <button
+          onClick={next}
+          className="absolute right-8 z-20 bg-white/20 hover:bg-white/40 smooth-transition rounded-full p-3 text-white"
+          aria-label="Next image"
+        >
+          <ChevronRight size={28} />
+        </button>
+
+        {/* Carousel Indicators */}
+        <div className="absolute bottom-8 z-20 flex gap-3 left-1/2 transform -translate-x-1/2">
+          {carouselImages.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => {
+                setAutoPlay(false);
+                setCurrentIndex(idx);
+              }}
+              className={`h-2 smooth-transition ${
+                idx === currentIndex ? 'bg-gold w-8' : 'bg-white/50 w-2'
+              }`}
+              aria-label={`Go to slide ${idx + 1}`}
+            />
+          ))}
         </div>
 
+        {/* Content Overlay */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
